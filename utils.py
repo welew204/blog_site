@@ -33,7 +33,8 @@ def harvest_posts(directory):
             post_string = f.read()
             title_end_index = post_string.find('\n')
             post_title = post_string[2:title_end_index]
-            post_content = post_string[title_end_index+4:]
+            content_start_index = post_string.find('---<*>---')
+            post_content = post_string[content_start_index+10:]
             post_html = markdown.markdown(post_string)
             path_title = ''.join(
                 filter(check_for_punc_in_string, post_title.split()))
