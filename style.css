@@ -1,0 +1,12 @@
+.byline {
+    margin-left: 15px;
+    font-size: large;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'MuseoModerno', cursive;
+}
+
+p {
+    font-family: 'Archivo', sans-serif;
+}
