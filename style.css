@@ -3,10 +3,19 @@
     font-size: large;
 }
 
-h1, h2, h3, h4 {
+h1, h2, h3, h4, h5, h6 {
     font-family: 'MuseoModerno', cursive;
 }
 
 p {
     font-family: 'Archivo', sans-serif;
 }
+
+.similar-div {
+    position: fixed;
+    right: 0;
+    top: 50%; /* Adjust as needed */
+    transform: translateY(-50%);
+    background-color: lightgreen;
+    padding: 10px;
+  }

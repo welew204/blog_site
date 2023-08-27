@@ -34,8 +34,23 @@
     </p>
 
     <hr />
-    <div class="card mx-3 p-2">
-        {{post_html}}
+    <div>
+        <div class="card mx-3 p-2" style="display: flex; width: 70%;">
+            {{post_html}}
+        </div>
+        <div class="card mx-3 p-2 similar-div">
+            <h3>Similar Posts</h3>
+            <ul>
+                {% for p in sim_posts %}
+                <!-- <p>{{p}}</p> -->
+                <li>
+                    <a href="./{{p.path}}">
+                        <h6>{{p.title}}</h6>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 
 </body>
