@@ -4,7 +4,7 @@ print("Executing from:", sys.executable)
 from jinja2 import Template
 import os
 import markdown
-from xml_to_md_parser import check_for_punc_in_string
+from xml_to_md_parser import clean_string
 from datetime import datetime as dt
 import nltk
 import pprint
@@ -42,11 +42,13 @@ def harvest_posts(directory):
             post_string = f.read()
             title_end_index = post_string.find('\n')
             post_title = post_string[2:title_end_index]
+            if 'Untitled' in post_title:
+                continue
             content_start_index = post_string.find('---<*>---')
             post_content = post_string[content_start_index+10:]
             post_html = markdown.markdown(post_string)
-            path_title = ''.join(
-                filter(check_for_punc_in_string, post_title.split()))
+            
+            path_title = clean_string(post_title)
             res = {'post_title': post_title,
                    'post_content': post_content,
                    'post_html': post_html,
@@ -82,15 +84,14 @@ def build(title, byline):
 
     for i, post in enumerate(blogs_list):
         # previous method using jinja2, but now using markdown library to go straight from MD to html :)
-        if "Untitled" in post['post_title']:
-            continue
+
         post['blog_title'] = title
         """ post['path_title'] = ''.join(
             filter(check_for_punc_in_string, post['post_title'].split())) """
         post['byline'] = byline
         # just the top 5 blogs
         sim_blogs = sim_matrix[post['post_title']][:5]
-        prepped_sim_blogs = [{"title": post[0], "path": ''.join(post[0].split())+".html"} for post in sim_blogs]
+        prepped_sim_blogs = [{"title": post[0], "path": clean_string(post[0])+".html"} for post in sim_blogs]
         post['sim_posts'] = prepped_sim_blogs
         post_result = post_template.render(post)
 
@@ -119,7 +120,7 @@ def new(title=""):
 # {today}
 ---<*>---
 *Add your content here*"""
-    path_title = title + ".md"
+    path_title = clean_string(title) + ".md"
     with open(os.path.join(directory, path_title), "x") as f:
         f.write(new_blog)
 

@@ -1,6 +1,7 @@
 import bs4 as BS
 from bs4 import BeautifulSoup
 import re
+import emoji
 from lxml import etree
 import datetime as dt
 
@@ -76,12 +77,12 @@ def convertXML(file):
 
     return blog_list
 
+some_sample_pathnames = ['Hoj?//w☣️♑️❌🛜tomakethe💩workforyou','CHANGEisintheair!', 'buildasmarterheart', 'BecomingFluent,partI', 'I.Assumptions', 'Howtomakethe💩workforyou']
 
-def check_for_punc_in_string(text):
-    punctuation_pattern = re.compile(r'[^\w\s]')
-    punctuation_matches = punctuation_pattern.findall(text)
-    return ~bool(punctuation_matches)
-
+def clean_string(text):
+    clean_text = re.sub(r'[^\w\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F700-\U0001F77F\U0001F780-\U0001F7FF\U0001F800-\U0001F8FF\U0001F900-\U0001F9FF\U0001FA00-\U0001FA6F]', '', text)
+    emoji_free_text = emoji.replace_emoji(clean_text, '')
+    return emoji_free_text
 
 def to_markdown(file_list):
     md_list = []
@@ -102,8 +103,7 @@ def to_markdown(file_list):
         new_post += f'Author: Will Belew{new_line_marker}'
         new_post += f"{fixed_date}{new_line_marker}"
         new_post += f"{post['raw_content']}"
-        path_title = ''.join(
-            filter(check_for_punc_in_string, post['title'].split()))
+        path_title = clean_string(post['title'])
         md_list.append((path_title, new_ml_post))
     return md_list
 
@@ -142,4 +142,5 @@ def main():
 
 
 if __name__ == "__main__":
-    res = main()
+    #res = main()
+    pass
