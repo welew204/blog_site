@@ -4,6 +4,9 @@ print("Executing from:", sys.executable)
 from jinja2 import Template
 import os
 import markdown
+# has metadata standard (a few different formats) ie: "markdown frontmatter"
+# look at HW for standardized (maybe '---' ?)
+# "decap" CMS by netlify
 from xml_to_md_parser import clean_string
 from datetime import datetime as dt
 import nltk
@@ -38,20 +41,21 @@ fake_blogs = [
 def harvest_posts(directory):
     blogs_list = []
     for file in os.listdir(directory):
-        with open(os.path.join(directory, file)) as f:
+        with open(os.path.join(directory, file), encoding="utf-8") as f:
             post_string = f.read()
-            title_end_index = post_string.find('\n')
-            post_title = post_string[2:title_end_index]
-            if 'Untitled' in post_title:
+            jt_index = post_string.find('\n\n')
+            just_text = post_string[jt_index:]
+            post_md = markdown.Markdown(extensions=['meta'])
+            post_md_html = post_md.convert(post_string)
+            if 'Untitled' in post_md.Meta['title'][0]:
                 continue
-            content_start_index = post_string.find('---<*>---')
-            post_content = post_string[content_start_index+10:]
-            post_html = markdown.markdown(post_string)
             
-            path_title = clean_string(post_title)
-            res = {'post_title': post_title,
-                   'post_content': post_content,
-                   'post_html': post_html,
+            path_title = clean_string(post_md.Meta['title'][0])
+            res = {'post_title': post_md.Meta['title'][0],
+                   'post_author': post_md.Meta['authors'][0],
+                   'post_date': post_md.Meta['date'][0],
+                   'post_html': post_md_html,
+                   'post_content': just_text,
                    'path_title': path_title}
             blogs_list.append(res)
     return blogs_list
