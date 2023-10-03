@@ -119,11 +119,12 @@ def new(title=""):
             next_untitled = str(int(untitleds[-1][8:]) + 1)
             untitled_string = "Untitled"+next_untitled
         title = untitled_string
-    new_blog = f"""# {title}
-# Author: Will Belew
-# {today}
----<*>---
-*Add your content here*"""
+    new_blog = f'''Title:   {title}
+Summary: 
+Authors: {"Will Belew"}
+Date:    {today}
+
+'''
     path_title = clean_string(title) + ".md"
     with open(os.path.join(directory, path_title), "x") as f:
         f.write(new_blog)
@@ -182,4 +183,5 @@ def main():
 
 
 if __name__ == "__main__":
+    #new()
     main()
