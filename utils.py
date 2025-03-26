@@ -1,4 +1,5 @@
 import sys
+
 print("Executing from:", sys.executable)
 
 from jinja2 import Template
@@ -41,6 +42,7 @@ fake_blogs = [
 def harvest_posts(directory):
     blogs_list = []
     for file in os.listdir(directory):
+        print(f"doing the harvest for {file}")
         with open(os.path.join(directory, file), encoding="utf-8") as f:
             post_string = f.read()
             jt_index = post_string.find('\n\n')
@@ -58,6 +60,8 @@ def harvest_posts(directory):
                    'post_content': just_text,
                    'path_title': path_title}
             blogs_list.append(res)
+        if path_title != res['post_title']:
+            os.rename(os.path.join(directory, file), os.path.join(directory, f'{path_title}.md'))
     return blogs_list
 
 
@@ -86,6 +90,7 @@ def build(title, byline):
     # Write the resulting HTML to a new file
     open('output.html', 'w+').write(summary_result)
 
+    blogs_list.sort(key=lambda x: dt.strptime(x['post_date'], '%a, %b %d %Y'), reverse=True)
     for i, post in enumerate(blogs_list):
         # previous method using jinja2, but now using markdown library to go straight from MD to html :)
 
