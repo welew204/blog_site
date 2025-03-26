@@ -71,6 +71,8 @@ def harvest_posts(directory):
 
 def build(title, byline):
     blogs_list = harvest_posts('content/')
+    blogs_list.sort(key=lambda x: dt.strptime(x['post_date'], '%a, %b %d %Y'), reverse=True)
+
     sim_matrix = build_similarity_matrix(blogs_list)
     with open('templates/cover_page_template.html') as cover_page_template_string:
         template_string = cover_page_template_string.read()
@@ -90,7 +92,6 @@ def build(title, byline):
     # Write the resulting HTML to a new file
     open('output.html', 'w+').write(summary_result)
 
-    blogs_list.sort(key=lambda x: dt.strptime(x['post_date'], '%a, %b %d %Y'), reverse=True)
     for i, post in enumerate(blogs_list):
         # previous method using jinja2, but now using markdown library to go straight from MD to html :)
 
